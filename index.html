@@ -33,7 +33,7 @@
 			<div class="col s12 m12 l8" id="canv_area">
 				<div class="card-panel" style="padding:0;line-height:0;">
 
-					<canvas id="canv" class="" tabindex="0" width="432" height="321" style="width:100%;">Please use Chrome</canvas>
+					<canvas id="canv" class="" tabindex="0" width="2000" height="2000" style="width:100%;">Please use Chrome</canvas>
 					<div class="progress" style="margin:0;display:none;">
 						<div class="determinate" style="width:0%;margin:0;"></div>
 					</div>
@@ -60,18 +60,22 @@
 		var ctx = canv.getContext('2d');
 		$(document).ready(function() {
 			// $('.materialboxed').materialbox();
-			RAY.init(ctx, 432, 321, 0);
+			RAY.init(ctx, 2000, 2000, 0);
 		});
+
+		var onprocess = function() {
+			$('.determinate').css('width', 100 * RAY.progress / (RAY.width * RAY.height) + '%');
+		}
+
+		var onfinish = function() {
+			$('.progress').css('display', 'none');
+			Materialize.toast('Finish!', 1000);
+		}
 
 		function startTracing() {
 			RAY.pause = false;
-			$('.progress').css('display','block');
-			RAY.traceCanvas(function(){
-				$('.determinate').css('width',100*RAY.progress/(RAY.width*RAY.height)+'%');
-			},function() {
-				$('.progress').css('display','none');
-				Materialize.toast('Finish!', 1000);
-			});
+			$('.progress').css('display', 'block');
+			RAY.traceCanvas(onprocess, onfinish);
 			// setInterval(function(){RAY.traceCanvas();},100);
 		}
 	</script>
