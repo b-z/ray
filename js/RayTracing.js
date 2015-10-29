@@ -22,7 +22,7 @@ RAY.init = function(ctx, width, height, progress) {
 
 	this.pause = false;
 
-	this.timeout = 30;
+	this.timeout = 15;
 
 	var tmp = Math.min(this.width, this.height);
 	this.basesize = 1;
