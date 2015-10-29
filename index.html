@@ -5,6 +5,7 @@
 	<link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>
+		Online Ray Tracing Tool
 	</title>
 
 	<style>
@@ -19,6 +20,13 @@
 		input {
 			text-align: center;
 		}
+
+		#doge1,
+		#doge2 {
+			display: none;
+			position: absolute;
+			width: 40px;
+		}
 	</style>
 </head>
 
@@ -30,24 +38,38 @@
 	<div class="container" style="width:85%">
 		<div class="row">
 			<div class="col s12 m12 l8" id="canv_area">
-				<div class="card-panel" style="padding:0;line-height:0;">
-
-					<canvas id="canv" class="" tabindex="0" width="432" height="321" style="width:100%;">Please use Chrome</canvas>
+				<div class="card-panel" style="padding:0;line-height:0;position:relative;">
+					<canvas id="canv" class="" tabindex="0" width="2048" height="2048" style="width:100%;">Please use Chrome</canvas>
 					<div class="progress" style="margin:0;display:none;">
-						<div class="determinate" style="width:0%;margin:0;"></div>
+						<div class="determinate" style="width:0%;margin:0;-webkit-transition: none;transition: none;"></div>
 					</div>
+					<img id="doge1" src="img/doge1.png" style="right:-40px;">
+					<img id="doge2" src="img/doge2.png" style="left:-40px;">
 				</div>
 			</div>
 			<div class="col s12 m12 l4">
 				<div class="card-panel">
 					<div class="row">
-						<div class="col s5 m3 l7">
+						<div class="col s10 m6 l12">
 							<p>
-								<a onclick="startTracing();" class="btn waves-effect waves-light" style="width:100%;">Run</a>
+								<a onclick="startTracing();" class="btn waves-effect waves-light" style="width:50%;">Run</a>
 							</p>
 							<p>
-								<a onclick="RAY.pause=true;" class="btn waves-effect waves-light" style="width:100%;">Pause</a>
+								<a onclick="pause();" class="btn waves-effect waves-light" style="width:50%;">Pause</a>
 							</p>
+							<div class="divider"></div>
+							<p>
+								<a onclick="pause();saveProgress();" class="btn tooltipped waves-effect waves-light" style="width:50%;" data-position="left" data-delay="10" data-tooltip="Save Progress">Save</a>
+							</p>
+							<p>
+								<div class="file-field input-field">
+									<div onclick="pause();" class="btn tooltipped waves-effect waves-light" style="height:36px;line-height:36px;width:50%" data-position="left" data-delay="10" data-tooltip="Load Progress">
+										<span>Load</span>
+										<input id="file" type="file">
+									</div>
+								</div>
+							</p>
+
 						</div>
 					</div>
 				</div>
@@ -57,22 +79,77 @@
 	<script type="text/javascript">
 		var canv = $('#canv')[0];
 		var ctx = canv.getContext('2d');
+		var file = $('#file')[0];
 		$(document).ready(function() {
 			// $('.materialboxed').materialbox();
-			RAY.init(ctx, 432, 321, 0);
+			RAY.init(ctx, canv.width, canv.height, 0);
+			file.onchange = function(event) {
+				var selectedFile = event.target.files[0];
+				var reader = new FileReader();
+				reader.onload = putImage2Canvas;
+				reader.readAsDataURL(selectedFile);
+			}
 		});
+
+		function putImage2Canvas(event) {
+			var img = new Image();
+			img.src = event.target.result;
+			img.onload = function() {
+				canv.width = img.width;
+				canv.height = img.height;
+				ctx = canv.getContext('2d');
+				ctx.drawImage(img, 0, 0);
+				RAY.init(ctx, img.width, img.height, window.localStorage.RAYprogress);
+				onprocess();
+			}
+		}
+
+		var onprocess = function() {
+			$('.determinate').css('width', 100 * RAY.progress / (RAY.width * RAY.height) + '%');
+			try {
+				$('[id^=doge]').css('top', $('#canv').height() * RAY.coords[RAY.progress].y / RAY.height - 20 + 'px');
+			} catch (e) {}
+		}
+
+		var onfinish = function() {
+			setTimeout(function() {
+				$('.progress').css('display', 'none');
+				$('[id^=doge]').css('display', 'none');
+				Materialize.toast('Finish!', 1000);
+			}, 1000);
+		}
 
 		function startTracing() {
 			RAY.pause = false;
-			$('.progress').css('display','block');
-			RAY.traceCanvas(function(){
-				$('.determinate').css('width',100*RAY.progress/(RAY.width*RAY.height)+'%');
-			},function() {
-				$('.progress').css('display','none');
-				Materialize.toast('Finish!', 1000);
-			});
+			$('.progress').css('display', 'block');
+			$('[id^=doge]').css('display', 'block');
+			RAY.traceCanvas(onprocess, onfinish);
 			// setInterval(function(){RAY.traceCanvas();},100);
 		}
+
+		function pause() {
+			RAY.pause = true;
+		}
+
+		function saveProgress() {
+			//还应该存储模型的方位等信息
+			var type='image/png';
+			var imgsrc = canv.toDataURL(type).replace(type, "image/octet-stream");
+			var img = new Image();
+			img.src = imgsrc;
+			window.location.href = imgsrc;
+
+			var storage = window.localStorage;
+			if (!storage.getItem("RAYprogress")) {
+				storage.setItem("RAYprogress", 0);
+			}
+			storage.RAYprogress = RAY.progress;
+		}
+
+		// function loadProgress() {
+		//
+		// 	// RAY.init(ctx, width,height,window.localStorage.RAYprogress);
+		// }
 	</script>
 </body>
 
