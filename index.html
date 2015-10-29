@@ -21,8 +21,11 @@
 			text-align: center;
 		}
 
-		#doge1,#doge2{
-			display:none;position:absolute;width:3rem;
+		#doge1,
+		#doge2 {
+			display: none;
+			position: absolute;
+			width: 40px;
 		}
 	</style>
 </head>
@@ -35,13 +38,13 @@
 	<div class="container" style="width:85%">
 		<div class="row">
 			<div class="col s12 m12 l8" id="canv_area">
-				<div class="card-panel" style="padding:0;line-height:0;">
+				<div class="card-panel" style="padding:0;line-height:0;position:relative;">
 					<canvas id="canv" class="" tabindex="0" width="2000" height="2000" style="width:100%;">Please use Chrome</canvas>
 					<div class="progress" style="margin:0;display:none;">
 						<div class="determinate" style="width:0%;margin:0;"></div>
 					</div>
-					<img id="doge1" src="img/doge1.png">
-					<img id="doge2" src="img/doge2.png">
+					<img id="doge1" src="img/doge1.png" style="right:-40px;">
+					<img id="doge2" src="img/doge2.png" style="left:-40px;">
 				</div>
 			</div>
 			<div class="col s12 m12 l4">
@@ -70,11 +73,15 @@
 
 		var onprocess = function() {
 			$('.determinate').css('width', 100 * RAY.progress / (RAY.width * RAY.height) + '%');
+			try {
+				$('[id^=doge]').css('top', $('#canv').height() * RAY.coords[RAY.progress].y / RAY.height - 20 + 'px');
+			} catch (e) {}
 		}
 
 		var onfinish = function() {
 			setTimeout(function() {
 				$('.progress').css('display', 'none');
+				$('[id^=doge]').css('display', 'none');
 				Materialize.toast('Finish!', 1000);
 			}, 1000);
 		}
@@ -82,6 +89,7 @@
 		function startTracing() {
 			RAY.pause = false;
 			$('.progress').css('display', 'block');
+			$('[id^=doge]').css('display', 'block');
 			RAY.traceCanvas(onprocess, onfinish);
 			// setInterval(function(){RAY.traceCanvas();},100);
 		}
