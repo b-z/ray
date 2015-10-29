@@ -20,6 +20,10 @@
 		input {
 			text-align: center;
 		}
+
+		#doge1,#doge2{
+			display:none;position:absolute;width:3rem;
+		}
 	</style>
 </head>
 
@@ -32,11 +36,12 @@
 		<div class="row">
 			<div class="col s12 m12 l8" id="canv_area">
 				<div class="card-panel" style="padding:0;line-height:0;">
-
 					<canvas id="canv" class="" tabindex="0" width="2000" height="2000" style="width:100%;">Please use Chrome</canvas>
 					<div class="progress" style="margin:0;display:none;">
 						<div class="determinate" style="width:0%;margin:0;"></div>
 					</div>
+					<img id="doge1" src="img/doge1.png">
+					<img id="doge2" src="img/doge2.png">
 				</div>
 			</div>
 			<div class="col s12 m12 l4">
@@ -68,8 +73,10 @@
 		}
 
 		var onfinish = function() {
-			$('.progress').css('display', 'none');
-			Materialize.toast('Finish!', 1000);
+			setTimeout(function() {
+				$('.progress').css('display', 'none');
+				Materialize.toast('Finish!', 1000);
+			}, 1000);
 		}
 
 		function startTracing() {
