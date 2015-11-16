@@ -108,7 +108,7 @@
 			$('.determinate').css('width', 100 * RAY.progress / (RAY.width * RAY.height) + '%');
 			if (RAY.progress)
 				$('[id^=doge]').css('top', $('#canv').height() * RAY.coords[RAY.progress-1].y / RAY.height - 20 + 'px');
-			} catch (e) {}
+			}
 		}
 
 		var onfinish = function() {
