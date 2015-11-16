@@ -106,9 +106,9 @@
 
 		var onprocess = function() {
 			$('.determinate').css('width', 100 * RAY.progress / (RAY.width * RAY.height) + '%');
-			try {
-				$('[id^=doge]').css('top', $('#canv').height() * RAY.coords[RAY.progress].y / RAY.height - 20 + 'px');
-			} catch (e) {}
+			if (RAY.progress){
+				$('[id^=doge]').css('top', $('#canv').height() * RAY.coords[RAY.progress-1].y / RAY.height - 20 + 'px');
+			}//bug fix
 		}
 
 		var onfinish = function() {
@@ -117,7 +117,7 @@
 				$('[id^=doge]').css('display', 'none');
 				Materialize.toast('Finish!', 1000);
 			}, 1000);
-		}
+		} 
 
 		function startTracing() {
 			RAY.pause = false;
