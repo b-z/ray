@@ -347,7 +347,7 @@ THREE.OBJLoader.prototype = {
 			object = objects[ i ];
 			geometry = object.geometry;
 
-			var buffergeometry = new THREE.Geometry();
+			var buffergeometry = new THREE.BufferGeometry();
 
 			buffergeometry.addAttribute( 'position', new THREE.BufferAttribute( new Float32Array( geometry.vertices ), 3 ) );
 

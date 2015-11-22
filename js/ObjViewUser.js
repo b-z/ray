@@ -178,7 +178,7 @@ function init() {
 	// model
 
 	var loader = new THREE.OBJLoader(manager);
-	loader.load('obj/bunny.obj', function(object) {
+	loader.load('obj/box.obj', function(object) {
 		object.traverse(function(child) {
 			if (child instanceof THREE.Mesh) {
 				// child.material.map = texture;
@@ -191,6 +191,8 @@ function init() {
 				})
 				child.castShadow = true;
 				child.receiveShadow = true;
+				child.geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
+				child.geometry.normalize();
 				child.geometry.computeBoundingSphere();
 
 				var s = child.geometry.boundingSphere;
@@ -207,7 +209,7 @@ function init() {
 				var scale = 0.5;
 				child.scale.set(scale / r, scale / r, scale / r);
 				child.position.set(-c.x * scale / r, -c.y * scale / r - 0.5 + (c.y - b1.y) * scale / r + 0.0001, -c.z * scale / r);
-				// child.geometry.mergeVertices();
+				child.geometry.mergeVertices();
 				child.geometry.computeVertexNormals();
 				child.geometry.computeFaceNormals();
 				mesh = child;
