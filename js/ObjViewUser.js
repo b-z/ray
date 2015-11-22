@@ -134,31 +134,8 @@ function init() {
 
 	var ambient = new THREE.AmbientLight(0x050505);
 	camera.add(ambient);
-	// addShadowedLight(0.3, 0.25, -0.2, 0xffffff, 1);
-	// addShadowedLight(0.1, 0.25, -0.1, 0xffab36, 0.125);
-	// addShadowedLight(0.1, 0.25, 0.1, 0xffab36, 0.125);
-	// addShadowedLight(-0.1, 0.25, -0.1, 0xffab36, 0.125);
-	// addShadowedLight(-0.1, 0.25, 0.1, 0xffab36, 0.125);
 	addSpotLight(0, 0.6, 0, 0xffab36, 0.25);
 	addPointLight(0, 0.25, 0, 0xffab36, 0.25);
-	// var directionalLight = new THREE.DirectionalLight(0xffeedd);
-	// directionalLight.position.set(0, 0, 1);
-	// scene.add(directionalLight);
-
-	// texture
-
-
-	// var loader = new THREE.ImageLoader(manager);
-	// loader.load('textures/1.jpeg', function(image) {
-	//
-	// 	texture.image = image;
-	// 	texture.needsUpdate = true;
-	//
-	// });
-
-	// model
-
-
 	//
 
 	renderer = new THREE.WebGLRenderer({
@@ -181,19 +158,7 @@ function init() {
 	scene.add(camera);
 
 	controls = new THREE.OrbitControls(camera, renderer.domElement);
-	// controls.rotateSpeed = 1.0;
-	// controls.zoomSpeed = 1.2;
-	// controls.panSpeed = 0.8;
-	//
-	// controls.noZoom = false;
-	// controls.noPan = false;
-	//
-	// controls.staticMoving = true;
-	// controls.dynamicDampingFactor = 0.3;
-	//
-	// controls.keys = [65, 83, 68];
 	controls.enableDamping = false;
-	// controls.dampingFactor = 0.25;
 	controls.enableZoom = false;
 	controls.enablePan = false;
 	controls.enableKeys = true;
@@ -206,15 +171,6 @@ function init() {
 	window.addEventListener('resize', onWindowResize, false);
 
 }
-
-// function addAreaLight() {
-// 	var areaLight = new THREE.AreaLight(0xff0000, 3);
-// 	areaLight.position.set(0, 0.4999, -2);
-// 	areaLight.rotation.set(Math.PI / 2, 0, 0);
-// 	areaLight.width = 0.25;
-// 	areaLight.height = 0.25;
-// 	camera.add(areaLight1);
-// }
 
 function loadModel() {
 	try {
