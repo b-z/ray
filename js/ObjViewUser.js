@@ -1,6 +1,6 @@
 var container;
 
-var camera, scene, renderer, controls;
+var camera, scene, renderer, controls, object;
 
 var plane, mesh;
 
@@ -22,7 +22,7 @@ function startRendering() {
 	animate();
 	windowHalfX = $('#raylayer').width() / 2;
 	windowHalfY = $('#raylayer').height() / 2;
-	$('#startRenderingButton').hide();
+	// $('#startRenderingButton').hide();
 }
 
 function init() {
@@ -147,25 +147,6 @@ function init() {
 
 	// texture
 
-	var manager = new THREE.LoadingManager();
-	manager.onProgress = function(item, loaded, total) {
-		console.info(item, loaded, total);
-		if (loaded == total) {
-			animate();
-		}
-	};
-
-	var texture = new THREE.Texture();
-
-	var onProgress = function(xhr) {
-		if (xhr.lengthComputable) {
-			var percentComplete = xhr.loaded / xhr.total * 100;
-			console.info(Math.round(percentComplete, 2) + '% downloaded');
-		}
-	};
-
-	var onError = function(xhr) {};
-
 
 	// var loader = new THREE.ImageLoader(manager);
 	// loader.load('textures/1.jpeg', function(image) {
@@ -177,51 +158,6 @@ function init() {
 
 	// model
 
-	var loader = new THREE.OBJLoader(manager);
-	loader.load('obj/box.obj', function(object) {
-		object.traverse(function(child) {
-			if (child instanceof THREE.Mesh) {
-				// child.material.map = texture;
-				child.material = new THREE.MeshPhongMaterial({
-					// color: 0xffffff,
-					color: Math.round(Math.random() * 0xffffff),
-					specular: 0xffffff,
-					// shading: THREE.SmoothShading
-					shading: THREE.FlatShading
-				})
-				child.castShadow = true;
-				child.receiveShadow = true;
-				child.geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
-				child.geometry.normalize();
-				child.geometry.computeBoundingSphere();
-
-				var s = child.geometry.boundingSphere;
-				var c = s.center;
-				var r = s.radius;
-
-				child.geometry.computeBoundingBox();
-
-				var b = child.geometry.boundingBox;
-				var b1 = b.min;
-				// console.log(r);
-				// console.log(b1);
-				var b2 = b.max;
-				var scale = 0.5;
-				child.scale.set(scale / r, scale / r, scale / r);
-				child.position.set(-c.x * scale / r, -c.y * scale / r - 0.5 + (c.y - b1.y) * scale / r + 0.0001, -c.z * scale / r);
-				child.geometry.mergeVertices();
-				child.geometry.computeVertexNormals();
-				child.geometry.computeFaceNormals();
-				mesh = child;
-			}
-		});
-
-		// object.position.y = -80;
-		scene.add(object);
-		// mesh = object;
-
-
-	}, onProgress, onError);
 
 	//
 
@@ -280,6 +216,77 @@ function init() {
 // 	camera.add(areaLight1);
 // }
 
+function loadModel() {
+	try {
+		scene.remove(object);
+	} catch (e) {}
+	var manager = new THREE.LoadingManager();
+	manager.onProgress = function(item, loaded, total) {
+		console.info(item, loaded, total);
+		if (loaded == total) {
+			animate();
+		}
+	};
+
+	var texture = new THREE.Texture();
+
+	var onProgress = function(xhr) {
+		if (xhr.lengthComputable) {
+			var percentComplete = xhr.loaded / xhr.total * 100;
+			console.info(Math.round(percentComplete, 2) + '% downloaded');
+		}
+	};
+
+	var onError = function(xhr) {};
+
+	var loader = new THREE.OBJLoader(manager);
+	loader.load('obj/' + $('#filename').val(), function(object0) {
+		object0.traverse(function(child) {
+			if (child instanceof THREE.Mesh) {
+				// child.material.map = texture;
+				child.material = new THREE.MeshPhongMaterial({
+					// color: 0xffffff,
+					color: Math.round(Math.random() * 0xffffff),
+					specular: 0xffffff,
+					// shading: THREE.SmoothShading
+					shading: $('#smooth')[0].checked?THREE.SmoothShading:THREE.FlatShading
+				})
+				child.castShadow = true;
+				child.receiveShadow = true;
+				child.geometry = new THREE.Geometry().fromBufferGeometry(child.geometry);
+				child.geometry.normalize();
+				child.geometry.computeBoundingSphere();
+
+				var s = child.geometry.boundingSphere;
+				var c = s.center;
+				var r = s.radius;
+
+				child.geometry.computeBoundingBox();
+
+				var b = child.geometry.boundingBox;
+				var b1 = b.min;
+				// console.log(r);
+				// console.log(b1);
+				var b2 = b.max;
+				var scale = 0.5;
+				child.scale.set(scale / r, scale / r, scale / r);
+				child.position.set(-c.x * scale / r, -c.y * scale / r - 0.5 + (c.y - b1.y) * scale / r + 0.0001, -c.z * scale / r);
+				child.geometry.mergeVertices();
+				child.geometry.computeVertexNormals();
+				child.geometry.computeFaceNormals();
+				mesh = child;
+			}
+		});
+
+		// object.position.y = -80;
+		scene.add(object0);
+		object = object0;
+
+
+	}, onProgress, onError);
+
+}
+
 function addPointLight(x, y, z, color, intensity) {
 	var light = new THREE.PointLight(color, intensity);
 	light.position.set(x, y, z);
@@ -294,7 +301,7 @@ function addPointLight(x, y, z, color, intensity) {
 
 function addSpotLight(x, y, z, color, intensity) {
 	var spotLight = new THREE.SpotLight(color);
-	spotLight.position.set(x,y,z);
+	spotLight.position.set(x, y, z);
 
 	spotLight.castShadow = true;
 

@@ -76,24 +76,51 @@
 				<div class="card-panel" style="position:relative;">
 					<!-- choose panel -->
 					<div class="row">
-						<div class="col s12" style="height:20px;">
+						<div class="col s12" style="height:32px;">
 							<ul class="tabs z-depth-1" style="position:absolute;top:0;left:0;">
-								<li class="tab col s3"><a class="active" href="#panel1" onclick="$('#raylayer').hide();$('#objlayer').show();">WebGL</a></li>
-								<li class="tab col s3"><a href="#panel2" onclick="$('#raylayer').show();$('#objlayer').hide();">Ray Tracing</a></li>
+								<li class="tab col s3"><a href="#panel1" onclick="$('#raylayer').show();$('#objlayer').hide();">Ray Tracing</a></li>
+								<li class="tab col s3"><a class="active" href="#panel2" onclick="$('#raylayer').hide();$('#objlayer').show();">WebGL</a></li>
 							</ul>
 						</div>
 					</div>
-					<!-- panel 1 -->
-					<div id="panel1" class="row">
+					<!-- panel 2 -->
+					<div id="panel2" class="row">
 						<div class="col s10 m6 l12">
+							<p class="input-field">
+								<select id="filename">
+									<option value="box.obj" selected>box.obj</option>
+									<option value="bunny.obj">bunny.obj</option>
+									<option value="cube_triangle.obj">cube_triangle.obj</option>
+									<option value="diamond.obj">diamond.obj</option>
+									<option value="dinosaur.obj">dinosaur.obj</option>
+									<option value="elephant.obj">elephant.obj</option>
+									<option value="Fish.obj">Fish.obj</option>
+									<option value="gourd.obj">gourd.obj</option>
+									<option value="hand.obj">hand.obj</option>
+									<option value="lion.obj">lion.obj</option>
+									<option value="monster.obj">monster.obj</option>
+									<option value="pyramid.obj">pyramid.obj</option>
+									<option value="sphere.obj">sphere.obj</option>
+									<option value="teapot.obj">teapot.obj</option>
+									<option value="teddy.obj">teddy.obj</option>
+									<option value="test.obj">test.obj</option>
+									<option value="test2.obj">test2.obj</option>
+									<option value="tetrahedron.obj">tetrahedron.obj</option>
+								</select>
+								<label>Select Model</label>
+							</p>
+							<p>
+								<input type="checkbox" id="smooth" />
+								<label for="smooth">Smooth Shading</label>
+							</p>
 							<p id="startRenderingButton">
-								<a onclick="startRendering();" class="btn waves-effect waves-light" style="width:50%;">Run</a>
+								<a onclick="loadModel();" class="btn waves-effect waves-light" style="width:50%;">Run</a>
 							</p>
 						</div>
 					</div>
-					<!-- panel 2 -->
+					<!-- panel 1 -->
 
-					<div id="panel2" class="row">
+					<div id="panel1" class="row">
 						<div class="col s10 m6 l12">
 							<p>
 								<a onclick="startTracing();" class="btn waves-effect waves-light" style="width:50%;">Run</a>

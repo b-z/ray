@@ -14,6 +14,8 @@ $(document).ready(function() {
 	$('#objlayer').width($('#raylayer').width());
 	$('#objlayer').height($('#raylayer').height());
 	$('#raylayer').hide();
+	$('select').material_select();
+	startRendering();
 });
 
 function putImage2Canvas(event) {
