@@ -50,6 +50,7 @@ function startTracing() {
 	RAY.pause = false;
 	$('.progress').css('display', 'block');
 	$('[id^=doge]').css('display', 'block');
+	RAY.initScene(scene,camera);
 	RAY.traceCanvas(onprocess, onfinish);
 	// setInterval(function(){RAY.traceCanvas();},100);
 }

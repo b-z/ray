@@ -6,7 +6,12 @@ var RAY = {
 	basesize: null,
 	coords: null,
 	pause: null,
-	timeout: null
+	timeout: null,
+	scene: null,
+	camera: null,
+	perspective: null,
+	cameraNormalMatrix: null,
+	objects: null
 };
 //预处理时生成一个结果数组，
 //加一个函数，输入progress，直接读数组返回xy
@@ -61,18 +66,20 @@ RAY.init = function(ctx, width, height, progress) {
 			}
 		}
 	}
+
 }
 
-RAY.tracePixel = function(x, y) {
-	return {
-		r: Math.round(255 * x / this.width),
-		g: Math.round(255 * y / this.height),
-		b: Math.round(255 * Math.random()),
-		a: 1
-	}
+RAY.initScene = function(scene, camera) {
+	this.scene = scene;
+	this.camera = camera;
+	this.cameraNormalMatrix = new THREE.Matrix3();
+	console.log(camera.matrixWorld);
+	this.cameraNormalMatrix.getNormalMatrix(camera.matrixWorld);
+	this.perspective = 0.5 / Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * this.height;
+	this.objects = scene.children;
 }
 
-RAY.traceCanvas = function(onprocess,onfinish) {
+RAY.traceCanvas = function(onprocess, onfinish) {
 	var end = this.width * this.height;
 	while (!this.pause && this.progress < end) {
 
@@ -85,7 +92,7 @@ RAY.traceCanvas = function(onprocess,onfinish) {
 		if (this.progress > 1 && this.coords[this.progress - 1].y != this.coords[this.progress - 2].y) {
 			onprocess();
 			setTimeout(function() {
-				RAY.traceCanvas(onprocess,onfinish)
+				RAY.traceCanvas(onprocess, onfinish)
 			}, this.timeout);
 			break;
 		}
@@ -94,4 +101,37 @@ RAY.traceCanvas = function(onprocess,onfinish) {
 		onprocess();
 		onfinish();
 	}
+}
+
+RAY.tracePixel = function(x, y) {
+	var origin = new THREE.Vector3();
+	origin.copy(this.camera.position);
+
+	var direction = new THREE.Vector3(x - this.width / 2, y - this.height / 2, -this.perspective);
+	direction.applyMatrix3(this.cameraNormalMatrix).normalize();
+
+	var outputColor = new THREE.Color(0, 0, 0);
+	this.spawnRay(origin, direction, outputColor, 0);
+
+	return {
+		r: Math.round(255 * outputColor.r),
+		g: Math.round(255 * outputColor.g),
+		b: Math.round(255 * outputColor.b),
+		a: 1
+	}
+}
+
+RAY.spawnRay = function(origin, direction, color, recursionDepth) {
+	var intersections = this.raycasting(origin, direction);
+	if (intersections.length == 0) {
+		return;
+	}
+	var first = intersections[0];
+	var object = first.object;
+	color.copy(object.material.color);
+}
+
+RAY.raycasting = function(origin, direction) {
+	var raycaster = new THREE.Raycaster(origin, direction);
+	return raycaster.intersectObjects(this.objects, true);
 }
