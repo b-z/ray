@@ -11,7 +11,8 @@ var RAY = {
 	camera: null,
 	perspective: null,
 	cameraNormalMatrix: null,
-	objects: null
+	objects: null,
+	maxRecursionDepth: null
 };
 //预处理时生成一个结果数组，
 //加一个函数，输入progress，直接读数组返回xy
@@ -28,6 +29,8 @@ RAY.init = function(ctx, width, height, progress) {
 	this.pause = false;
 
 	this.timeout = 15;
+
+	this.maxRecursionDepth = 5;
 
 	var tmp = Math.min(this.width, this.height);
 	this.basesize = 1;
@@ -73,7 +76,7 @@ RAY.initScene = function(scene, camera) {
 	this.scene = scene;
 	this.camera = camera;
 	this.cameraNormalMatrix = new THREE.Matrix3();
-	console.log(camera.matrixWorld);
+	// console.log(camera.matrixWorld);
 	this.cameraNormalMatrix.getNormalMatrix(camera.matrixWorld);
 	this.perspective = 0.5 / Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * this.height;
 	this.objects = scene.children;
@@ -84,7 +87,7 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 	while (!this.pause && this.progress < end) {
 
 		var coord = this.coords[this.progress];
-		var c = RAY.tracePixel(coord.x, this.height-coord.y);
+		var c = RAY.tracePixel(coord.x, this.height - coord.y);
 		var n = coord.size;
 		this.coords[this.progress].color = this.ctx.fillStyle = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')';
 		this.ctx.fillRect(coord.x, coord.y, n, n);
@@ -134,4 +137,12 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth) {
 RAY.raycasting = function(origin, direction) {
 	var raycaster = new THREE.Raycaster(origin, direction);
 	return raycaster.intersectObjects(this.objects, true);
+}
+
+RAY.reflecting = function() {
+
+}
+
+RAY.mixColor=function(){
+	
 }

@@ -155,6 +155,7 @@ THREE.RaytracingRenderer = function(parameters) {
 			//
 
 			var _object = cache[object.id];
+			// 用于加速矩阵求逆
 
 			localPoint.copy(point).applyMatrix4(_object.inverseMatrix);
 			eyeVector.subVectors(raycaster.ray.origin, point).normalize();
