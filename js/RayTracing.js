@@ -84,7 +84,7 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 	while (!this.pause && this.progress < end) {
 
 		var coord = this.coords[this.progress];
-		var c = RAY.tracePixel(coord.x, coord.y);
+		var c = RAY.tracePixel(coord.x, this.height-coord.y);
 		var n = coord.size;
 		this.coords[this.progress].color = this.ctx.fillStyle = 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + c.a + ')';
 		this.ctx.fillRect(coord.x, coord.y, n, n);

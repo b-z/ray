@@ -313,7 +313,7 @@ function onWindowResize() {
 	camera2.updateProjectionMatrix();
 
 	renderer.setSize($('#raylayer').width(), $('#raylayer').height());
-	controls.handleResize();
+	// controls.handleResize();
 	animate();
 }
 
