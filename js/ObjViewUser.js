@@ -133,9 +133,9 @@ function init() {
 	camera.add(plane);
 
 	var ambient = new THREE.AmbientLight(0x050505);
-	// camera.add(ambient);
-	addSpotLight(0, 0.49, 0, 0xffab36, 0.25);
-	// addPointLight(0, 0.25, 0, 0xffab36, 0.25);
+	camera.add(ambient);
+	addSpotLight(0, 0.6, 0, 0xffab36, 0.25);
+	addPointLight(0, 0.25, 0, 0xffab36, 0.25);
 	//
 
 	renderer = new THREE.WebGLRenderer({
@@ -266,7 +266,7 @@ function addSpotLight(x, y, z, color, intensity) {
 
 	spotLight.shadowCameraNear = 0.5;
 	spotLight.shadowCameraFar = 10;
-	spotLight.shadowCameraFov = 150;
+	spotLight.shadowCameraFov = 70;
 
 	scene.add(spotLight);
 	// var spotLightHelper = new THREE.SpotLightHelper( spotLight );
