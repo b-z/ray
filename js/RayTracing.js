@@ -12,6 +12,8 @@ var RAY = {
 	perspective: null,
 	cameraNormalMatrix: null,
 	objects: null,
+	lights: null,
+	objcache: null,
 	maxRecursionDepth: null
 };
 //预处理时生成一个结果数组，
@@ -29,6 +31,10 @@ RAY.init = function(ctx, width, height, progress) {
 	this.pause = false;
 
 	this.timeout = 15;
+
+	this.lights = [];
+
+	this.objcache = {};
 
 	this.maxRecursionDepth = 5;
 
@@ -77,9 +83,30 @@ RAY.initScene = function(scene, camera) {
 	this.camera = camera;
 	this.cameraNormalMatrix = new THREE.Matrix3();
 	// console.log(camera.matrixWorld);
-	this.cameraNormalMatrix.getNormalMatrix(camera.matrixWorld);
+	this.cameraNormalMatrix.getNormalMatrix(this.camera.matrixWorld);
 	this.perspective = 0.5 / Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * this.height;
 	this.objects = scene.children;
+	var scope = this;
+	scene.traverse(function(object) {
+		if (object instanceof THREE.Light) {
+			if (object.type == "PointLight") {
+				scope.lights.push(object);
+			}
+		}
+		if (scope.objcache[object.id] === undefined) {
+			scope.objcache[object.id] = {
+				normalMatrix: new THREE.Matrix3(),
+				inverseMatrix: new THREE.Matrix4()
+			};
+		}
+		var modelViewMatrix = new THREE.Matrix4();
+		modelViewMatrix.multiplyMatrices(scope.camera.matrixWorldInverse, object.matrixWorld);
+
+		var _object = scope.objcache[object.id];
+
+		_object.normalMatrix.getNormalMatrix(modelViewMatrix);
+		_object.inverseMatrix.getInverse(object.matrixWorld);
+	});
 }
 
 RAY.traceCanvas = function(onprocess, onfinish) {
@@ -109,7 +136,8 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 RAY.tracePixel = function(x, y) {
 	var origin = new THREE.Vector3();
 	origin.copy(this.camera.position);
-
+	x += Math.random() - 0.5;
+	y += Math.random() - 0.5;
 	var direction = new THREE.Vector3(x - this.width / 2, y - this.height / 2, -this.perspective);
 	direction.applyMatrix3(this.cameraNormalMatrix).normalize();
 
@@ -131,11 +159,39 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth) {
 	}
 	var first = intersections[0];
 	var object = first.object;
-	color.copy(object.material.color);
+
+	var diffuseColor = new THREE.Color(0, 0, 0);
+	try {
+		diffuseColor.copyGammaToLinear(object.material.color);
+	} catch (e) {
+		diffuseColor.set(0, 0, 0);
+		console.warn("set diffuseColor fail");
+	}
+
+	var rayLightOrigin = new THREE.Vector3();
+	rayLightOrigin.copy(first.point);
+	var rayLightDirection = new THREE.Vector3();
+
+	for (var i = 0; i < this.lights.length; i++) {
+		var lightVector = new THREE.Vector3();
+		lightVector.setFromMatrixPosition(this.lights[i].matrixWorld);
+		var distance = lightVector.distanceTo(first.point);
+		lightVector.sub(first.point);
+		rayLightDirection.copy(lightVector).normalize();
+		var lightIntersections = this.raycasting(rayLightOrigin, rayLightDirection, 0, distance);
+		if (lightIntersections.length) {
+			continue;
+		}
+		color.add(diffuseColor);
+	}
 }
 
-RAY.raycasting = function(origin, direction) {
+RAY.raycasting = function(origin, direction, near, far) {
 	var raycaster = new THREE.Raycaster(origin, direction);
+	if (near != undefined && far != undefined) {
+		raycaster.near = near;
+		raycaster.far = far;
+	}
 	return raycaster.intersectObjects(this.objects, true);
 }
 
@@ -143,6 +199,6 @@ RAY.reflecting = function() {
 
 }
 
-RAY.mixColor=function(){
-	
+RAY.mixColor = function() {
+
 }
