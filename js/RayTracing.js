@@ -176,9 +176,21 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth) {
 		var lightVector = new THREE.Vector3();
 		lightVector.setFromMatrixPosition(this.lights[i].matrixWorld);
 		var distance = lightVector.distanceTo(first.point);
+
+		var tmp=new THREE.Vector3();
+		tmp.copy(lightVector);
+
 		lightVector.sub(first.point);
 		rayLightDirection.copy(lightVector).normalize();
-		var lightIntersections = this.raycasting(rayLightOrigin, rayLightDirection, 0, distance);
+		rayLightDirection.multiplyScalar(-1);
+		var lightIntersections = this.raycasting(tmp, rayLightDirection, 0, distance-0.00000001);
+
+		// if (lightIntersections.length){
+		// 	distance=tmp.distanceTo(lightIntersections[0].point);
+		// }
+		// // color.r=lightIntersections.length/3;
+
+
 		if (lightIntersections.length) {
 			continue;
 		}

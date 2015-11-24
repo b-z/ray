@@ -82,7 +82,7 @@ function init() {
 		})
 	);
 	plane.rotation.x = Math.PI / 2;
-	plane.position.y = 0.4999;
+	plane.position.y = 0.49999;
 	plane.position.z = -2;
 	plane.receiveShadow = true;
 
@@ -134,8 +134,8 @@ function init() {
 
 	var ambient = new THREE.AmbientLight(0x050505);
 	camera.add(ambient);
-	addSpotLight(0, 0.6, 0, 0xffab36, 0.25);
-	addPointLight(0, 0.25, 0, 0xffab36, 0.25);
+	addSpotLight(0, 0.499, 0, 0xffab36, 0.25);
+	addPointLight(0, 0.499, 0, 0xffab36, 0.25);
 	//
 
 	renderer = new THREE.WebGLRenderer({
@@ -205,6 +205,7 @@ function loadModel() {
 					color: Math.round(Math.random() * 0xffffff),
 					specular: 0xffffff,
 					// shading: THREE.SmoothShading
+					side: THREE.DoubleSide,
 					shading: $('#smooth')[0].checked?THREE.SmoothShading:THREE.FlatShading
 				})
 				child.castShadow = true;
@@ -266,7 +267,7 @@ function addSpotLight(x, y, z, color, intensity) {
 
 	spotLight.shadowCameraNear = 0.5;
 	spotLight.shadowCameraFar = 10;
-	spotLight.shadowCameraFov = 70;
+	spotLight.shadowCameraFov =80;
 
 	scene.add(spotLight);
 	// var spotLightHelper = new THREE.SpotLightHelper( spotLight );
