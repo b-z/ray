@@ -260,7 +260,7 @@ function addSpotLight(x, y, z, color, intensity) {
 	var spotLight = new THREE.SpotLight(color);
 	spotLight.position.set(x, y, z);
 
-	spotLight.castShadow = true;
+	spotLight.castShadow = false;
 
 	spotLight.shadowMapWidth = 1024;
 	spotLight.shadowMapHeight = 1024;
