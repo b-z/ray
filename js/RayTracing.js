@@ -133,11 +133,50 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 	}
 }
 
+// with lens
+RAY.tracePixel = function(x, y) {
+	var origin = new THREE.Vector3();
+	var outputColor = new THREE.Color(0, 0, 0);
+	var num_samples = 4;
+	var num_samples2=Math.pow(num_samples,2);
+	for (var n = 0; n < num_samples2; n++) {
+		origin.copy(this.camera.position);
+		// 抖动采样
+		x0 = x- 0.5 + Math.random()/num_samples+n%num_samples/num_samples;
+		y0 = y- 0.5 + Math.random()/num_samples+Math.floor(n/num_samples)/num_samples;
+		var pp = [x0 - this.width / 2, y0 - this.height / 2]; //sample point on a pixel
+		var tmp = Math.random() * Math.PI * 2;
+		var lens_radius = 0.04;
+		var lp = [lens_radius * Math.cos(tmp), lens_radius * Math.sin(tmp)];
+		origin.x += lp[0];
+		origin.y += lp[1];
+
+		//ray direction
+		var f = 2; //focal plane distance
+		var d = this.perspective; //view plane distance
+		var direction = new THREE.Vector3(pp[0] * f / d + lp[0], pp[1] * f / d - lp[1], -f);
+		direction.applyMatrix3(this.cameraNormalMatrix).normalize();
+		// direction.normalize();
+		this.spawnRay(origin, direction, outputColor, 0);
+	}
+
+	return {
+		r: Math.round(255 / num_samples2 * outputColor.r),
+		g: Math.round(255 / num_samples2 * outputColor.g),
+		b: Math.round(255 / num_samples2 * outputColor.b),
+		a: 1
+	}
+}
+
+
+/*
+//without lens
 RAY.tracePixel = function(x, y) {
 	var origin = new THREE.Vector3();
 	origin.copy(this.camera.position);
 	x += Math.random() - 0.5;
 	y += Math.random() - 0.5;
+
 	var direction = new THREE.Vector3(x - this.width / 2, y - this.height / 2, -this.perspective);
 	direction.applyMatrix3(this.cameraNormalMatrix).normalize();
 
@@ -151,6 +190,7 @@ RAY.tracePixel = function(x, y) {
 		a: 1
 	}
 }
+*/
 
 RAY.spawnRay = function(origin, direction, color, recursionDepth) {
 	var intersections = this.raycasting(origin, direction);
@@ -177,13 +217,13 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth) {
 		lightVector.setFromMatrixPosition(this.lights[i].matrixWorld);
 		var distance = lightVector.distanceTo(first.point);
 
-		var lightPosition=new THREE.Vector3();
+		var lightPosition = new THREE.Vector3();
 		lightPosition.copy(lightVector);
 
 		lightVector.sub(first.point);
 		rayLightDirection.copy(lightVector).normalize();
 		rayLightDirection.multiplyScalar(-1);
-		var lightIntersections = this.raycasting(lightPosition, rayLightDirection, 0, distance-0.00000001);
+		var lightIntersections = this.raycasting(lightPosition, rayLightDirection, 0, distance - 0.00000001);
 
 		////// DEBUG
 		// if (lightIntersections.length){
@@ -194,6 +234,8 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth) {
 		if (lightIntersections.length) {
 			continue;
 		}
+
+
 		color.add(diffuseColor);
 	}
 }
