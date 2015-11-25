@@ -177,19 +177,19 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth) {
 		lightVector.setFromMatrixPosition(this.lights[i].matrixWorld);
 		var distance = lightVector.distanceTo(first.point);
 
-		var tmp=new THREE.Vector3();
-		tmp.copy(lightVector);
+		var lightPosition=new THREE.Vector3();
+		lightPosition.copy(lightVector);
 
 		lightVector.sub(first.point);
 		rayLightDirection.copy(lightVector).normalize();
 		rayLightDirection.multiplyScalar(-1);
-		var lightIntersections = this.raycasting(tmp, rayLightDirection, 0, distance-0.00000001);
+		var lightIntersections = this.raycasting(lightPosition, rayLightDirection, 0, distance-0.00000001);
 
+		////// DEBUG
 		// if (lightIntersections.length){
-		// 	distance=tmp.distanceTo(lightIntersections[0].point);
+		// 	distance=lightPosition.distanceTo(lightIntersections[0].point);
 		// }
-		// // color.r=lightIntersections.length/3;
-
+		// color.r=lightIntersections.length/3;
 
 		if (lightIntersections.length) {
 			continue;
