@@ -137,7 +137,7 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 RAY.tracePixel = function(x, y) {
 	var origin = new THREE.Vector3();
 	var outputColor = new THREE.Color(0, 0, 0);
-	var num_samples = 1;
+	var num_samples = 4;
 	var num_samples2 = Math.pow(num_samples, 2);
 	for (var n = 0; n < num_samples2; n++) {
 		origin.copy(this.camera.position);
@@ -215,11 +215,13 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth) {
 	for (var i = 0; i < this.lights.length; i++) {
 		var lightVector = new THREE.Vector3();
 		lightVector.setFromMatrixPosition(this.lights[i].matrixWorld);
+		var lightSize=0.25;
+		lightVector.x+=(Math.random()-0.5)*lightSize;
+		lightVector.z+=(Math.random()-0.5)*lightSize;
 		var distance = lightVector.distanceTo(first.point);
 
 		var lightPosition = new THREE.Vector3();
 		lightPosition.copy(lightVector);
-
 		lightVector.sub(first.point);
 		rayLightDirection.copy(lightVector).normalize();
 		rayLightDirection.multiplyScalar(-1);
