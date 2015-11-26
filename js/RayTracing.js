@@ -137,16 +137,16 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 RAY.tracePixel = function(x, y) {
 	var origin = new THREE.Vector3();
 	var outputColor = new THREE.Color(0, 0, 0);
-	var num_samples = 4;
-	var num_samples2=Math.pow(num_samples,2);
+	var num_samples = 1;
+	var num_samples2 = Math.pow(num_samples, 2);
 	for (var n = 0; n < num_samples2; n++) {
 		origin.copy(this.camera.position);
 		// 抖动采样
-		x0 = x- 0.5 + Math.random()/num_samples+n%num_samples/num_samples;
-		y0 = y- 0.5 + Math.random()/num_samples+Math.floor(n/num_samples)/num_samples;
+		x0 = x - 0.5 + Math.random() / num_samples + n % num_samples / num_samples;
+		y0 = y - 0.5 + Math.random() / num_samples + Math.floor(n / num_samples) / num_samples;
 		var pp = [x0 - this.width / 2, y0 - this.height / 2]; //sample point on a pixel
 		var tmp = Math.random() * Math.PI * 2;
-		var lens_radius = 0.04;
+		var lens_radius = 0.04 * Math.random();
 		var lp = [lens_radius * Math.cos(tmp), lens_radius * Math.sin(tmp)];
 		origin.x += lp[0];
 		origin.y += lp[1];
