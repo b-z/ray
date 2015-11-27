@@ -14,8 +14,11 @@ var RAY = {
 	objects: null,
 	lights: null,
 	objcache: null,
-	maxRecursionDepth: null
+	maxRecursionDepth: null,
+	octree:null
 };
+
+
 //预处理时生成一个结果数组，
 //加一个函数，输入progress，直接读数组返回xy
 RAY.init = function(ctx, width, height, progress) {
@@ -86,6 +89,14 @@ RAY.initScene = function(scene, camera) {
 	this.cameraNormalMatrix.getNormalMatrix(this.camera.matrixWorld);
 	this.perspective = 0.5 / Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * this.height;
 	this.objects = scene.children;
+
+	this.octree = new THREE.Octree( {
+				undeferred: true,
+				depthMax: Infinity,
+				objectsThreshold: 8,
+				overlapPct: 0.15
+			} );
+
 	var scope = this;
 	scene.traverse(function(object) {
 		if (object instanceof THREE.Light) {
@@ -137,7 +148,7 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 RAY.tracePixel = function(x, y) {
 	var origin = new THREE.Vector3();
 	var outputColor = new THREE.Color(0, 0, 0);
-	var num_samples = 4;
+	var num_samples = 1;
 	var num_samples2 = Math.pow(num_samples, 2);
 	for (var n = 0; n < num_samples2; n++) {
 		origin.copy(this.camera.position);
