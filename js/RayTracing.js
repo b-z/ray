@@ -148,7 +148,7 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 RAY.tracePixel = function(x, y) {
 	var origin = new THREE.Vector3();
 	var outputColor = new THREE.Color(0, 0, 0);
-	var num_samples = 1;
+	var num_samples = 4;
 	var num_samples2 = Math.pow(num_samples, 2);
 	for (var n = 0; n < num_samples2; n++) {
 		origin.copy(this.camera.position);
