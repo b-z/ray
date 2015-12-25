@@ -49,8 +49,8 @@ function init() {
 	plane = new THREE.Mesh(
 		new THREE.PlaneBufferGeometry(10, 10),
 		new THREE.MeshPhongMaterial({
-			color: 0xffff0f,
-			specular: 0x101010
+			color: 0xffffff,
+			specular: 0x707070
 		})
 	);
 	plane.rotation.x = -Math.PI / 2;
@@ -62,8 +62,8 @@ function init() {
 	plane = new THREE.Mesh(
 		new THREE.PlaneBufferGeometry(10, 10),
 		new THREE.MeshPhongMaterial({
-			color: 0xff0fff,
-			specular: 0x101010
+			color: 0xffffff,
+			specular: 0x707070
 		})
 	);
 	plane.rotation.x = Math.PI / 2;
@@ -94,7 +94,7 @@ function init() {
 		new THREE.PlaneBufferGeometry(10, 10),
 		new THREE.MeshPhongMaterial({
 			color: 0x063c06,
-			specular: 0x101010
+			specular: 0x707070
 		})
 	);
 	plane.rotation.y = -Math.PI / 2;
@@ -108,7 +108,7 @@ function init() {
 		new THREE.PlaneBufferGeometry(10, 10),
 		new THREE.MeshPhongMaterial({
 			color: 0x910606,
-			specular: 0x101010
+			specular: 0x707070
 		})
 	);
 	plane.rotation.y = Math.PI / 2;
@@ -122,8 +122,8 @@ function init() {
 	plane = new THREE.Mesh(
 		new THREE.PlaneBufferGeometry(10, 10),
 		new THREE.MeshPhongMaterial({
-			color: 0x0fffff,
-			specular: 0x101010
+			color: 0xffffff,
+			specular: 0x707070
 		})
 	);
 	plane.rotation.z = Math.PI;
@@ -136,6 +136,7 @@ function init() {
 	camera.add(ambient);
 	addSpotLight(0, 0.499, 0, 0xffab36, 0.25);
 	addPointLight(0, 0.499, 0, 0xffab36, 0.25);
+	//addPointLight(0, 0, -1, 0xffab36, 0.25);
 	//
 
 	renderer = new THREE.WebGLRenderer({

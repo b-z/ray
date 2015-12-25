@@ -14,7 +14,8 @@ var RAY = {
     objects: null,
     lights: null,
     objcache: null,
-    maxRecursionDepth: null
+    maxRecursionDepth: null,
+    num_samples: null
 };
 
 
@@ -39,6 +40,8 @@ RAY.init = function(ctx, width, height, progress) {
     this.objcache = {};
 
     this.maxRecursionDepth = 5;
+
+    this.num_samples=1;
 
     var tmp = Math.min(this.width, this.height);
     this.basesize = 1;
@@ -140,7 +143,7 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 RAY.tracePixel = function(x, y) {
     var origin = new THREE.Vector3();
     var outputColor = new THREE.Color(0, 0, 0);
-    var num_samples = 16;
+    var num_samples = this.num_samples;
     var num_samples2 = Math.pow(num_samples, 2);
     for (var n = 0; n < num_samples2; n++) {
         origin.copy(this.camera.position);
@@ -246,6 +249,7 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
         var lightPosition = new THREE.Vector3();
         lightPosition.copy(lightVector);
         lightVector.sub(first.point);
+
         rayLightDirection.copy(lightVector).normalize();
         rayLightDirection.multiplyScalar(-1);
         var lightIntersections = this.raycasting(lightPosition, rayLightDirection, 0, distance - 0.00000001);
@@ -266,6 +270,7 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
         lightVector.normalize();
 
         var dot = Math.max(normalVector.dot(lightVector), 0);
+        //var dot = Math.abs(normalVector.dot(lightVector));
 		//console.log(dot);
         var diffuseIntensity = dot * this.lights[i].intensity*100;
 		// console.log(diffuseIntensity);
