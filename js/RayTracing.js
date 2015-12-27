@@ -41,7 +41,7 @@ RAY.init = function(ctx, width, height, progress) {
 
     this.maxRecursionDepth = 5;
 
-    this.num_samples=1;
+    this.num_samples=16;
 
     var tmp = Math.min(this.width, this.height);
     this.basesize = 1;
