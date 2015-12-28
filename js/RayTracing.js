@@ -174,6 +174,7 @@ RAY.tracePixel = function(x, y) {
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	var origin = new THREE.Vector3();
 	var outputColor = new THREE.Color(0, 0, 0);
 	var num_samples = 4;
@@ -205,6 +206,8 @@ RAY.tracePixel = function(x, y) {
 		b: Math.round(255 / num_samples2 * outputColor.b),
 		a: 1
 	}
+=======
+>>>>>>> parent of 0cd6a79... update
 =======
 >>>>>>> parent of 0cd6a79... update
 =======
@@ -346,6 +349,7 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 RAY.spawnRay = function(origin, direction, color, recursionDepth,n,num_samples) {
 	var intersections = this.raycasting(origin, direction);
 	if (intersections.length == 0) {
@@ -394,6 +398,8 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth,n,num_samples) 
 
 		color.add(diffuseColor);
 	}
+=======
+>>>>>>> parent of 0cd6a79... update
 =======
 >>>>>>> parent of 0cd6a79... update
 =======
