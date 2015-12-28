@@ -183,7 +183,6 @@ RAY.tracePixel = function(x, y) {
         b: Math.round(255 / num_samples2 * outputColor.b),
         a: 1
     }
-=======
 	var origin = new THREE.Vector3();
 	var outputColor = new THREE.Color(0, 0, 0);
 	var num_samples = 4;
