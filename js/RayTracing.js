@@ -41,7 +41,13 @@ RAY.init = function(ctx, width, height, progress) {
 
     this.maxRecursionDepth = 5;
 
-    this.num_samples=16;
+    this.num_samples = $('#samplersize').val() - 0;
+
+    this.lens_size = $('#lenssize').val() - 0;
+
+    this.light_size = $('#lightsize').val() - 0;
+
+    this.focal_distance = $('#focal').val() - 0;
 
     var tmp = Math.min(this.width, this.height);
     this.basesize = 1;
@@ -89,6 +95,7 @@ RAY.initScene = function(scene, camera) {
     this.cameraNormalMatrix = new THREE.Matrix3();
     // console.log(camera.matrixWorld);
     this.cameraNormalMatrix.getNormalMatrix(this.camera.matrixWorld);
+    console.log(this.cameraNormalMatrix);
     this.perspective = 0.5 / Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * this.height;
     this.objects = scene.children;
 
@@ -150,19 +157,23 @@ RAY.tracePixel = function(x, y) {
         // 抖动采样
         x0 = x - 0.5 + Math.random() / num_samples + n % num_samples / num_samples;
         y0 = y - 0.5 + Math.random() / num_samples + Math.floor(n / num_samples) / num_samples;
+
         var pp = [x0 - this.width / 2, y0 - this.height / 2]; //sample point on a pixel
         var tmp = Math.random() * Math.PI * 2;
-        var lens_radius = 0.05 * Math.random();
+        //var lens_radius = 0.0 * Math.random();
+        var lens_radius = this.lens_size * Math.random();
         var lp = [lens_radius * Math.cos(tmp), lens_radius * Math.sin(tmp)];
         origin.x += lp[0];
         origin.y += lp[1];
 
+        lp[0] *= Math.cos(Math.atan2(camera.position.x, camera.position.z));
+        lp[1] *= 1;
         //ray direction
-        var f = 2; //focal plane distance
+        var f = this.focal_distance; //focal plane distance
         var d = this.perspective; //view plane distance
-        var direction = new THREE.Vector3(pp[0] * f / d + lp[0], pp[1] * f / d - lp[1], -f);
-        direction.applyMatrix3(this.cameraNormalMatrix).normalize();
-        // direction.normalize();
+        var direction = new THREE.Vector3(pp[0] * f / d - lp[0], pp[1] * f / d - lp[1], -f);
+        direction.applyMatrix3(this.cameraNormalMatrix); //.normalize();
+        direction.normalize();
         this.spawnRay(origin, direction, outputColor, 0, n, num_samples);
     }
 
@@ -209,7 +220,8 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
     var material = object.material;
     var diffuseColor = new THREE.Color(0, 0, 0);
     try {
-        diffuseColor.copyGammaToLinear(object.material.color);
+        diffuseColor.copy(object.material.color);
+        //diffuseColor.copyGammaToLinear(object.material.color);
     } catch (e) {
         diffuseColor.set(0, 0, 0);
         console.warn("set diffuseColor fail");
@@ -229,17 +241,18 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
     // var localPoint=new THREE.Vector3();
     // localPoint.copy(first.point).applyMatrix4(cacheobject.inverseMatrix);
 
-	var eyeVector=new THREE.Vector3();
-	eyeVector.subVectors(origin,first.point).normalize();
+    var eyeVector = new THREE.Vector3();
+    eyeVector.subVectors(origin, first.point).normalize();
 
-	var halfVector=new THREE.Vector3();
-	var specularColor=new THREE.Color(0,0,0);
-	var schlick=new THREE.Color(0,0,0);
+    var halfVector = new THREE.Vector3();
+    var specularColor = new THREE.Color(0, 0, 0);
+    var schlick = new THREE.Color(0, 0, 0);
 
     for (var i = 0; i < this.lights.length; i++) {
         var lightVector = new THREE.Vector3();
         lightVector.setFromMatrixPosition(this.lights[i].matrixWorld);
-        var lightSize = 0.25;
+        //console.log(lightVector);
+        var lightSize = this.light_size;
         lightVector.x += x0 * lightSize;
         lightVector.z += y0 * lightSize;
         //lightVector.x+=(Math.random()-0.5)*lightSize;
@@ -263,20 +276,29 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
         if (lightIntersections.length) {
             continue;
         }
-
-        normalVector.copy(first.face.normal);
-
-        var attenuation = 1.0 / (lightVector.length() * lightVector.length());
+        if (material instanceof THREE.MeshBasicMaterial) {
+            var white = new THREE.Color(1, 1, 1);
+            color.add(white);
+        }
+        if (first.object.normal == undefined) {
+            normalVector.copy(first.face.normal);
+        } else {
+            normalVector.copy(first.object.normal);
+        }
+        //console.log(first);
+        var r = lightVector.length() / 2;
+        var attenuation = 1.0 / (r * r); //(lightVector.length() * lightVector.length());
         lightVector.normalize();
 
         var dot = Math.max(normalVector.dot(lightVector), 0);
         //var dot = Math.abs(normalVector.dot(lightVector));
-		//console.log(dot);
-        var diffuseIntensity = dot * this.lights[i].intensity*100;
-		// console.log(diffuseIntensity);
+        //console.log(dot);
+        var diffuseIntensity = dot * this.lights[i].intensity;
+        // console.log(diffuseIntensity);
 
         var lightColor = new THREE.Color(0, 0, 0);
-        lightColor.copyGammaToLinear(this.lights[i].color);
+        //lightColor.copyGammaToLinear(this.lights[i].color);
+        lightColor.copy(this.lights[i].color);
 
         var lightContribution = new THREE.Color(0, 0, 0);
         lightContribution.copy(diffuseColor);
@@ -284,28 +306,29 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
         lightContribution.multiplyScalar(diffuseIntensity * attenuation);
 
         color.add(lightContribution);
-		if (material instanceof THREE.MeshPhongMaterial) {
-			halfVector.addVectors(lightVector, eyeVector).normalize();
+        if (material instanceof THREE.MeshPhongMaterial && first.object.normal == undefined) {
+            halfVector.addVectors(lightVector, eyeVector).normalize();
 
-			var dotNormalHalf = Math.max(normalVector.dot(halfVector), 0.0);
-			var specularIntensity = Math.max(Math.pow(dotNormalHalf, material.shininess), 0.0) * diffuseIntensity;
+            var dotNormalHalf = Math.max(normalVector.dot(halfVector), 0.0);
+            var specularIntensity = Math.max(Math.pow(dotNormalHalf, material.shininess), 0.0) * diffuseIntensity;
 
-			var specularNormalization = (material.shininess + 2.0) / 8.0;
+            var specularNormalization = (material.shininess + 2.0) / 8.0;
 
-			specularColor.copyGammaToLinear(material.specular);
+            specularColor.copy(material.specular);
+            //specularColor.copyGammaToLinear(material.specular);
 
-			var alpha = Math.pow(Math.max(1.0 - lightVector.dot(halfVector), 0.0), 5.0);
+            var alpha = Math.pow(Math.max(1.0 - lightVector.dot(halfVector), 0.0), 5.0);
 
-			schlick.r = specularColor.r + (1.0 - specularColor.r) * alpha;
-			schlick.g = specularColor.g + (1.0 - specularColor.g) * alpha;
-			schlick.b = specularColor.b + (1.0 - specularColor.b) * alpha;
+            schlick.r = specularColor.r + (1.0 - specularColor.r) * alpha;
+            schlick.g = specularColor.g + (1.0 - specularColor.g) * alpha;
+            schlick.b = specularColor.b + (1.0 - specularColor.b) * alpha;
 
-			lightContribution.copy(schlick);
+            lightContribution.copy(schlick);
 
-			lightContribution.multiply(lightColor);
-			lightContribution.multiplyScalar(specularNormalization * specularIntensity * attenuation);
-			color.add(lightContribution);
-		}
+            lightContribution.multiply(lightColor);
+            lightContribution.multiplyScalar(specularNormalization * specularIntensity * attenuation);
+            color.add(lightContribution);
+        }
     }
 }
 
