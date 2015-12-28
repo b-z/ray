@@ -148,7 +148,6 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 
 // with lens
 RAY.tracePixel = function(x, y) {
-<<<<<<< Updated upstream
     var origin = new THREE.Vector3();
     var outputColor = new THREE.Color(0, 0, 0);
     var num_samples = this.num_samples;
