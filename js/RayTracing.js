@@ -214,7 +214,6 @@ RAY.tracePixel = function(x, y) {
 		b: Math.round(255 / num_samples2 * outputColor.b),
 		a: 1
 	}
->>>>>>> Stashed changes
 }
 
 
@@ -241,7 +240,6 @@ RAY.tracePixel = function(x, y) {
 }
 */
 
-<<<<<<< Updated upstream
 RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples) {
     var intersections = this.raycasting(origin, direction);
     if (intersections.length == 0) {
@@ -363,7 +361,6 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             color.add(lightContribution);
         }
     }
-=======
 RAY.spawnRay = function(origin, direction, color, recursionDepth,n,num_samples) {
 	var intersections = this.raycasting(origin, direction);
 	if (intersections.length == 0) {
@@ -412,7 +409,6 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth,n,num_samples) 
 
 		color.add(diffuseColor);
 	}
->>>>>>> Stashed changes
 }
 
 RAY.raycasting = function(origin, direction, near, far) {
