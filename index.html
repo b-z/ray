@@ -42,6 +42,16 @@
 	<script type="text/javascript" src="js/RayTracing.js"></script>
 	<script type="text/javascript" src="js/three.min.js"></script>
 	<script type="text/javascript" src="js/Octree.js"></script>
+	<script type="text/javascript" src="js/RaytracingRenderer.js"></script>
+	<!-- <script type="text/javascript" src="js/WebGLDeferredRenderer.js"></script>
+	<script type="text/javascript" src="js/ShaderDeferred.js"></script>
+	<script type="text/javascript" src="js/RenderPass.js"></script>
+	<script type="text/javascript" src="js/EffectComposer.js"></script>
+	<script type="text/javascript" src="js/CopyShader.js"></script>
+	<script type="text/javascript" src="js/ShaderPass.js"></script>
+	<script type="text/javascript" src="js/FXAAShader.js"></script>
+	<script type="text/javascript" src="js/MaskPass.js"></script> -->
+
 	<script type="text/javascript" src="js/OBJLoader.js"></script>
 	<script type="text/javascript" src="js/OrbitControls.js"></script>
 	<script type="text/javascript" src="js/RayTracingUser.js"></script>
@@ -81,7 +91,6 @@
 								<select id="filename">
 									<option value="box.obj" selected>box.obj</option>
 									<option value="bunny.obj">bunny.obj</option>
-									<option value="bunny3.obj">bunny3.obj</option>
 									<option value="cube_triangle.obj">cube_triangle.obj</option>
 									<option value="diamond.obj">diamond.obj</option>
 									<option value="dinosaur.obj">dinosaur.obj</option>
@@ -114,8 +123,6 @@
 
 					<div id="panel1" class="row">
 						<div class="col s10 m6 l12">
-<<<<<<< HEAD
-=======
 							<div class="row">
 								<div class="input-field col s6">
 									<input value="16" id="samplersize" type="text" class="validate">
@@ -124,7 +131,7 @@
 							</div>
 							<div class="row">
 								<div class="input-field col s6">
-									<input value="0.08" id="lenssize" type="text" class="validate">
+									<input value="0.05" id="lenssize" type="text" class="validate">
 									<label class="active" for="lenssize">Lens Size</label>
 								</div>
 							</div>
@@ -141,7 +148,6 @@
 								</div>
 							</div>
 							<div class="divider"></div>
->>>>>>> parent of d916d81... little bug fix
 							<p>
 								<a onclick="startTracing();" class="btn waves-effect waves-light" style="width:50%;">Run</a>
 							</p>
