@@ -30,7 +30,7 @@ function init() {
 	container = document.createElement('div');
 	$('#objlayer').append(container);
 
-	camera = new THREE.PerspectiveCamera(35, $('#raylayer').width() / $('#raylayer').height(), 1, 100);
+	camera = new THREE.PerspectiveCamera(35, $('#raylayer').width() / $('#raylayer').height(), 1, 15);
 	camera2 = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000);
 	// camera.position.z = 10;
 	camera.position.set(0, 0, -2);
@@ -56,23 +56,21 @@ function init() {
 	plane.rotation.x = -Math.PI / 2;
 	plane.position.y = -0.5;
 	plane.receiveShadow = true;
-	plane.normal=new THREE.Vector3(0,1,0);
-	scene.add(plane);
+	camera.add(plane);
 
 	// ceil
 	plane = new THREE.Mesh(
 		new THREE.PlaneBufferGeometry(10, 10),
 		new THREE.MeshPhongMaterial({
 			color: 0xffffff,
-			specular: 0x000000
+			specular: 0x707070
 		})
 	);
 	plane.rotation.x = Math.PI / 2;
 	plane.position.y = 0.5;
 	plane.receiveShadow = true;
 
-	plane.normal=new THREE.Vector3(0,-1,0);
-	scene.add(plane);
+	camera.add(plane);
 
 	// light
 	plane = new THREE.Mesh(
@@ -85,29 +83,13 @@ function init() {
 	);
 	plane.rotation.x = Math.PI / 2;
 	plane.position.y = 0.49999;
-	plane.position.z = 0;
+	plane.position.z = -2;
 	plane.receiveShadow = true;
 
-	plane.normal=new THREE.Vector3(0,-1,0);
-	scene.add(plane);
+	camera.add(plane);
 
 	// right
 
-	plane = new THREE.Mesh(
-		new THREE.PlaneBufferGeometry(10, 10),
-		new THREE.MeshPhongMaterial({
-			color: 0x910606,
-			specular: 0x707070
-		})
-	);
-	plane.rotation.y = -Math.PI / 2;
-	plane.position.x = 0.5;
-	plane.receiveShadow = true;
-
-	plane.normal=new THREE.Vector3(-1,0,0);
-	scene.add(plane);
-
-	// left
 	plane = new THREE.Mesh(
 		new THREE.PlaneBufferGeometry(10, 10),
 		new THREE.MeshPhongMaterial({
@@ -115,12 +97,25 @@ function init() {
 			specular: 0x707070
 		})
 	);
+	plane.rotation.y = -Math.PI / 2;
+	plane.position.x = 0.5;
+	plane.receiveShadow = true;
+
+	camera.add(plane);
+
+	// left
+	plane = new THREE.Mesh(
+		new THREE.PlaneBufferGeometry(10, 10),
+		new THREE.MeshPhongMaterial({
+			color: 0x910606,
+			specular: 0x707070
+		})
+	);
 	plane.rotation.y = Math.PI / 2;
 	plane.position.x = -0.5;
 	plane.receiveShadow = true;
 
-	plane.normal=new THREE.Vector3(1,0,0);
-	scene.add(plane);
+	camera.add(plane);
 
 	// back
 
@@ -132,33 +127,15 @@ function init() {
 		})
 	);
 	plane.rotation.z = Math.PI;
-	plane.position.z = -0.5;
+	plane.position.z = -2.5;
 	plane.receiveShadow = true;
 
-	plane.normal=new THREE.Vector3(0,0,1);
-	scene.add(plane);
-
-	// front
-
-	plane = new THREE.Mesh(
-		new THREE.PlaneBufferGeometry(10, 10),
-		new THREE.MeshPhongMaterial({
-			color: 0xffffff,
-			specular: 0x707070
-		})
-	);
-	plane.rotation.y = Math.PI;
-	plane.position.z = 0.5;
-	plane.receiveShadow = true;
-
-	plane.normal=new THREE.Vector3(0,0,-1);
-	scene.add(plane);
-
+	camera.add(plane);
 
 	var ambient = new THREE.AmbientLight(0x050505);
-	scene.add(ambient);
-	addSpotLight(0, 0.45, 0, 0xffab36, 0.25);
-	addPointLight(0, 0.45, 0, 0xffab36, 0.25);
+	camera.add(ambient);
+	addSpotLight(0, 0.499, 0, 0xffab36, 0.25);
+	addPointLight(0, 0.499, 0, 0xffab36, 0.25);
 	//addPointLight(0, 0, -1, 0xffab36, 0.25);
 	//
 
