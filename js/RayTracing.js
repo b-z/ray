@@ -148,6 +148,7 @@ RAY.traceCanvas = function(onprocess, onfinish) {
 
 // with lens
 RAY.tracePixel = function(x, y) {
+<<<<<<< Updated upstream
     var origin = new THREE.Vector3();
     var outputColor = new THREE.Color(0, 0, 0);
     var num_samples = this.num_samples;
@@ -183,6 +184,39 @@ RAY.tracePixel = function(x, y) {
         b: Math.round(255 / num_samples2 * outputColor.b),
         a: 1
     }
+=======
+	var origin = new THREE.Vector3();
+	var outputColor = new THREE.Color(0, 0, 0);
+	var num_samples = 4;
+	var num_samples2 = Math.pow(num_samples, 2);
+	for (var n = 0; n < num_samples2; n++) {
+		origin.copy(this.camera.position);
+		// 抖动采样
+		x0 = x - 0.5 + Math.random() / num_samples + n % num_samples / num_samples;
+		y0 = y - 0.5 + Math.random() / num_samples + Math.floor(n / num_samples) / num_samples;
+		var pp = [x0 - this.width / 2, y0 - this.height / 2]; //sample point on a pixel
+		var tmp = Math.random() * Math.PI * 2;
+		var lens_radius = 0.04 * Math.random();
+		var lp = [lens_radius * Math.cos(tmp), lens_radius * Math.sin(tmp)];
+		origin.x += lp[0];
+		origin.y += lp[1];
+
+		//ray direction
+		var f = 2; //focal plane distance
+		var d = this.perspective; //view plane distance
+		var direction = new THREE.Vector3(pp[0] * f / d + lp[0], pp[1] * f / d - lp[1], -f);
+		direction.applyMatrix3(this.cameraNormalMatrix).normalize();
+		// direction.normalize();
+		this.spawnRay(origin, direction, outputColor, 0,n,num_samples);
+	}
+
+	return {
+		r: Math.round(255 / num_samples2 * outputColor.r),
+		g: Math.round(255 / num_samples2 * outputColor.g),
+		b: Math.round(255 / num_samples2 * outputColor.b),
+		a: 1
+	}
+>>>>>>> Stashed changes
 }
 
 
@@ -209,6 +243,7 @@ RAY.tracePixel = function(x, y) {
 }
 */
 
+<<<<<<< Updated upstream
 RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples) {
     var intersections = this.raycasting(origin, direction);
     if (intersections.length == 0) {
@@ -330,6 +365,56 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             color.add(lightContribution);
         }
     }
+=======
+RAY.spawnRay = function(origin, direction, color, recursionDepth,n,num_samples) {
+	var intersections = this.raycasting(origin, direction);
+	if (intersections.length == 0) {
+		return;
+	}
+	var first = intersections[0];
+	var object = first.object;
+
+	var diffuseColor = new THREE.Color(0, 0, 0);
+	try {
+		diffuseColor.copyGammaToLinear(object.material.color);
+	} catch (e) {
+		diffuseColor.set(0, 0, 0);
+		console.warn("set diffuseColor fail");
+	}
+
+	var rayLightOrigin = new THREE.Vector3();
+	rayLightOrigin.copy(first.point);
+	var rayLightDirection = new THREE.Vector3();
+
+	for (var i = 0; i < this.lights.length; i++) {
+		var lightVector = new THREE.Vector3();
+		lightVector.setFromMatrixPosition(this.lights[i].matrixWorld);
+		var lightSize=0.25;
+		lightVector.x+=(Math.random()-0.5)*lightSize;
+		lightVector.z+=(Math.random()-0.5)*lightSize;
+		var distance = lightVector.distanceTo(first.point);
+
+		var lightPosition = new THREE.Vector3();
+		lightPosition.copy(lightVector);
+		lightVector.sub(first.point);
+		rayLightDirection.copy(lightVector).normalize();
+		rayLightDirection.multiplyScalar(-1);
+		var lightIntersections = this.raycasting(lightPosition, rayLightDirection, 0, distance - 0.00000001);
+
+		////// DEBUG
+		// if (lightIntersections.length){
+		// 	distance=lightPosition.distanceTo(lightIntersections[0].point);
+		// }
+		// color.r=lightIntersections.length/3;
+
+		if (lightIntersections.length) {
+			continue;
+		}
+
+
+		color.add(diffuseColor);
+	}
+>>>>>>> Stashed changes
 }
 
 RAY.raycasting = function(origin, direction, near, far) {
