@@ -157,8 +157,8 @@ function init() {
 
 	var ambient = new THREE.AmbientLight(0x050505);
 	scene.add(ambient);
-	addSpotLight(0, 0.45, 0, 0xffab36, 0.25);
-	addPointLight(0, 0.45, 0, 0xffab36, 0.25);
+	addSpotLight(0, 0.45, 0, 0xffdd88, 0.25);
+	addPointLight(0, 0.45, 0, 0xffdd88, 0.25);
 	//addPointLight(0, 0, -1, 0xffab36, 0.25);
 	//
 

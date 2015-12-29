@@ -161,6 +161,7 @@ RAY.tracePixel = function(x, y) {
     var num_samples = this.num_samples;
     var num_samples2 = Math.pow(num_samples, 2);
     for (var n = 0; n < num_samples2; n++) {
+        var color=new THREE.Color(0,0,0);
         origin.copy(this.camera.position);
         // 抖动采样
         x0 = x - 0.5 + Math.random() / num_samples + n % num_samples / num_samples;
@@ -182,13 +183,18 @@ RAY.tracePixel = function(x, y) {
         var direction = new THREE.Vector3(pp[0] * f / d - lp[0], pp[1] * f / d - lp[1], -f);
         direction.applyMatrix3(this.cameraNormalMatrix); //.normalize();
         direction.normalize();
-        this.spawnRay(origin, direction, outputColor, 0, n, num_samples);
+        this.spawnRay(origin, direction, color, 0, n, num_samples);
+        outputColor.add(color);
     }
+    outputColor.r/=num_samples2;
+    outputColor.g/=num_samples2;
+    outputColor.b/=num_samples2;
+    // outputColor.copyLinearToGamma(outputColor);
 
     return {
-        r: Math.round(255 / num_samples2 * outputColor.r),
-        g: Math.round(255 / num_samples2 * outputColor.g),
-        b: Math.round(255 / num_samples2 * outputColor.b),
+        r: Math.round(255  * outputColor.r),
+        g: Math.round(255  * outputColor.g),
+        b: Math.round(255  * outputColor.b),
         a: 1
     }
 }
@@ -294,7 +300,7 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             normalVector.copy(first.object.normal);
         }
         //console.log(first);
-        var r = lightVector.length() / 1.2;
+        var r = lightVector.length() / 1;
         var attenuation = 1.0 / (r * r); //(lightVector.length() * lightVector.length());
         lightVector.normalize();
 
@@ -337,8 +343,8 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             lightContribution.multiplyScalar(specularNormalization * specularIntensity * attenuation);
             color.add(lightContribution);
         }
-        color.copyLinearToGamma(color);
     }
+    color.copyLinearToGamma(color);
 }
 
 RAY.raycasting = function(origin, direction, near, far) {
