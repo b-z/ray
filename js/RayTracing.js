@@ -99,6 +99,14 @@ RAY.initScene = function(scene, camera) {
     this.perspective = 0.5 / Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * this.height;
     this.objects = scene.children;
 
+    this.num_samples = $('#samplersize').val() - 0;
+
+    this.lens_size = $('#lenssize').val() - 0;
+
+    this.light_size = $('#lightsize').val() - 0;
+
+    this.focal_distance = $('#focal').val() - 0;
+
     var scope = this;
     scene.traverse(function(object) {
         if (object instanceof THREE.Light) {
@@ -220,8 +228,8 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
     var material = object.material;
     var diffuseColor = new THREE.Color(0, 0, 0);
     try {
-        diffuseColor.copy(object.material.color);
-        //diffuseColor.copyGammaToLinear(object.material.color);
+        // diffuseColor.copy(object.material.color);
+        diffuseColor.copyGammaToLinear(object.material.color);
     } catch (e) {
         diffuseColor.set(0, 0, 0);
         console.warn("set diffuseColor fail");
@@ -286,7 +294,7 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             normalVector.copy(first.object.normal);
         }
         //console.log(first);
-        var r = lightVector.length() / 2;
+        var r = lightVector.length() / 1.2;
         var attenuation = 1.0 / (r * r); //(lightVector.length() * lightVector.length());
         lightVector.normalize();
 
@@ -297,8 +305,8 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
         // console.log(diffuseIntensity);
 
         var lightColor = new THREE.Color(0, 0, 0);
-        //lightColor.copyGammaToLinear(this.lights[i].color);
-        lightColor.copy(this.lights[i].color);
+        lightColor.copyGammaToLinear(this.lights[i].color);
+        // lightColor.copy(this.lights[i].color);
 
         var lightContribution = new THREE.Color(0, 0, 0);
         lightContribution.copy(diffuseColor);
@@ -314,8 +322,8 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
 
             var specularNormalization = (material.shininess + 2.0) / 8.0;
 
-            specularColor.copy(material.specular);
-            //specularColor.copyGammaToLinear(material.specular);
+            // specularColor.copy(material.specular);
+            specularColor.copyGammaToLinear(material.specular);
 
             var alpha = Math.pow(Math.max(1.0 - lightVector.dot(halfVector), 0.0), 5.0);
 
@@ -329,6 +337,7 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             lightContribution.multiplyScalar(specularNormalization * specularIntensity * attenuation);
             color.add(lightContribution);
         }
+        color.copyLinearToGamma(color);
     }
 }
 
