@@ -300,7 +300,7 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             normalVector.copy(first.object.normal);
         }
         //console.log(first);
-        var r = lightVector.length() / 1;
+        var r = lightVector.length() / 1.2;
         var attenuation = 1.0 / (r * r); //(lightVector.length() * lightVector.length());
         lightVector.normalize();
 
