@@ -38,6 +38,7 @@ Or, you can run it [online](http://b-z.github.io/ray).
 </div>
 
 * Click the "RUN" button, and have a cup of tea🍵
+
 <div style="text-align:center;">
 <img src="img/report/p4.png" width=300>
 </div>
@@ -55,9 +56,11 @@ Or, you can run it [online](http://b-z.github.io/ray).
 	* Inefficient (because JavaScript doesn't have mechanism of multi-thread and could not use GPU)
 
 ### 4. Gallery
+
 <div style="text-align:center;">
 <img src="img/gallery/box.png" width=40%><img src="img/gallery/bunny.png" width=40%>
 </div>
+
 <div style="text-align:center;">
 <img src="img/gallery/teapot.png" width=40%><img src="img/gallery/gourd.png" width=40%>
 </div>
