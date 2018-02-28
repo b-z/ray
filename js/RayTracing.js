@@ -161,7 +161,7 @@ RAY.tracePixel = function(x, y) {
     var num_samples = this.num_samples;
     var num_samples2 = Math.pow(num_samples, 2);
     for (var n = 0; n < num_samples2; n++) {
-        var color=new THREE.Color(0,0,0);
+        var color = new THREE.Color(0, 0, 0);
         origin.copy(this.camera.position);
         // 抖动采样
         x0 = x - 0.5 + Math.random() / num_samples + n % num_samples / num_samples;
@@ -184,17 +184,20 @@ RAY.tracePixel = function(x, y) {
         direction.applyMatrix3(this.cameraNormalMatrix); //.normalize();
         direction.normalize();
         this.spawnRay(origin, direction, color, 0, n, num_samples);
+        if (color.r > 1) color.r = 1;
+        if (color.g > 1) color.g = 1;
+        if (color.b > 1) color.b = 1;
         outputColor.add(color);
     }
-    outputColor.r/=num_samples2;
-    outputColor.g/=num_samples2;
-    outputColor.b/=num_samples2;
+    outputColor.r /= num_samples2;
+    outputColor.g /= num_samples2;
+    outputColor.b /= num_samples2;
     // outputColor.copyLinearToGamma(outputColor);
 
     return {
-        r: Math.round(255  * outputColor.r),
-        g: Math.round(255  * outputColor.g),
-        b: Math.round(255  * outputColor.b),
+        r: Math.round(255 * outputColor.r),
+        g: Math.round(255 * outputColor.g),
+        b: Math.round(255 * outputColor.b),
         a: 1
     }
 }
@@ -300,7 +303,7 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             normalVector.copy(first.object.normal);
         }
         //console.log(first);
-        var r = lightVector.length() / 1.2;
+        var r = lightVector.length(); // / 1.2;
         var attenuation = 1.0 / (r * r); //(lightVector.length() * lightVector.length());
         lightVector.normalize();
 
