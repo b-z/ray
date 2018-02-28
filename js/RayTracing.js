@@ -49,6 +49,12 @@ RAY.init = function(ctx, width, height, progress) {
 
     this.focal_distance = $('#focal').val() - 0;
 
+    this.recursion_depth = $('#recursion').val() - 0;
+
+    this.reflect_strength = $('#reflect').val() - 0;
+
+    this.reflect_diffusion = $('#reflect_d').val() - 0;
+
     var tmp = Math.min(this.width, this.height);
     this.basesize = 1;
     while (this.basesize << 1 < tmp) {
@@ -106,6 +112,12 @@ RAY.initScene = function(scene, camera) {
     this.light_size = $('#lightsize').val() - 0;
 
     this.focal_distance = $('#focal').val() - 0;
+
+    this.recursion_depth = $('#recursion').val() - 0;
+
+    this.reflect_strength = $('#reflect').val() - 0;
+
+    this.reflect_diffusion = $('#reflect_d').val() - 0;
 
     var scope = this;
     scene.traverse(function(object) {
@@ -192,7 +204,7 @@ RAY.tracePixel = function(x, y) {
     outputColor.r /= num_samples2;
     outputColor.g /= num_samples2;
     outputColor.b /= num_samples2;
-    // outputColor.copyLinearToGamma(outputColor);
+    outputColor.copyLinearToGamma(outputColor);
 
     return {
         r: Math.round(255 * outputColor.r),
@@ -252,8 +264,8 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
     var rayLightDirection = new THREE.Vector3();
 
     // 抖动采样
-    var x0 = -0.5 + Math.random() / num_samples + n % num_samples / num_samples;
-    var y0 = -0.5 + Math.random() / num_samples + Math.floor(n / num_samples) / num_samples;
+    var x0 = (n != undefined) ? (-0.5 + Math.random() / num_samples + n % num_samples / num_samples) : 0;
+    var y0 = (n != undefined) ? (-0.5 + Math.random() / num_samples + Math.floor(n / num_samples) / num_samples) : 0;
 
     // var localPoint=new THREE.Vector3();
     // localPoint.copy(first.point).applyMatrix4(cacheobject.inverseMatrix);
@@ -347,8 +359,52 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
             color.add(lightContribution);
         }
     }
-    color.copyLinearToGamma(color);
+
+    // 反射
+    var tmpColor = new THREE.Color(0, 0, 0);
+
+    if (first.object.normal == undefined) {
+        normalVector.copy(first.face.normal);
+    } else {
+        normalVector.copy(first.object.normal);
+    }
+
+    if (recursionDepth < this.recursion_depth) {
+        var reflectVector = new THREE.Vector3();
+        reflectVector.copy(direction);
+        var r = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+        r.normalize();
+        r.multiplyScalar(this.reflect_diffusion);
+        normalVector.add(r);
+        normalVector.normalize();
+        reflectVector.reflect(normalVector);
+
+        // color.r = (reflectVector.x + 1) / 2;
+        // color.g = (reflectVector.y + 1) / 2;
+        // color.b = (reflectVector.z + 1) / 2;
+        // return;
+        var theta = Math.max(eyeVector.dot(normalVector), 0.0);
+        var rf0 = this.reflect_strength;
+        var fresnel = rf0 + (1.0 - rf0) * Math.pow((1.0 - theta), 5.0);
+        var weight = fresnel;
+        // console.log(fresnel);
+        var zColor = tmpColor; //[recursionDepth];
+        RAY.spawnRay(first.point, reflectVector, zColor, recursionDepth + 1, n, num_samples);
+        if (material instanceof THREE.MeshPhongMaterial) {
+            zColor.multiply(material.specular);
+        }
+
+        // console.log(zColor);
+        // zColor.copyGammaToLinear(zColor);
+        // console.log(color, zColor);
+        zColor.multiplyScalar(weight);
+        // color.multiplyScalar(1 - weight);
+        color.add(zColor);
+    }
+    // console.log(color);
+    // color.copyLinearToGamma(color);
 }
+
 
 RAY.raycasting = function(origin, direction, near, far) {
     var raycaster = new THREE.Raycaster(origin, direction);
