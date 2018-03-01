@@ -64,7 +64,7 @@ function init() {
         new THREE.PlaneBufferGeometry(10, 10),
         new THREE.MeshPhongMaterial({
             color: 0xffffff,
-            specular: 0x707070
+            specular: 0x000000
         })
     );
     plane.rotation.x = Math.PI / 2;
@@ -230,7 +230,7 @@ function loadModel() {
                 child.material = new THREE.MeshPhongMaterial({
                     // color: 0xffffff,
                     color: 0x020000 * r + 0x000200 * g + 0x000002 * b,
-                    specular: 0x010000 * r + 0x000100 * g + 0x000001 * b,
+                    specular: 0xffffff,//0x010000 * r + 0x000100 * g + 0x000001 * b,
                     //707070,
                     // shading: THREE.SmoothShading
                     side: THREE.DoubleSide,

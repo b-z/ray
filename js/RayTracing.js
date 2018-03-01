@@ -368,7 +368,6 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
     } else {
         normalVector.copy(first.object.normal);
     }
-
     if (recursionDepth < this.recursion_depth) {
         var reflectVector = new THREE.Vector3();
         reflectVector.copy(direction);
@@ -391,14 +390,14 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
         var zColor = tmpColor; //[recursionDepth];
         RAY.spawnRay(first.point, reflectVector, zColor, recursionDepth + 1, n, num_samples);
         if (material instanceof THREE.MeshPhongMaterial) {
-            zColor.multiply(material.specular);
+            zColor.multiply(material.color);
         }
 
         // console.log(zColor);
         // zColor.copyGammaToLinear(zColor);
         // console.log(color, zColor);
         zColor.multiplyScalar(weight);
-        // color.multiplyScalar(1 - weight);
+        color.multiplyScalar(1 - weight);
         color.add(zColor);
     }
     // console.log(color);
