@@ -244,6 +244,17 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
         return;
     }
     var first = intersections[0];
+
+    /*if (recursionDepth >= 1) {
+        // color.r = color.g = color.b = first.distance;
+        if (first.distance <= 0.0000000001) {
+            if (intersections.length > 1) {
+                first = intersections[1];
+                // color.r = color.g = color.b = first.distance;
+            }
+        }
+        // return;
+    }*/
     var object = first.object;
     // var cacheobject = this.objcache[object.id];
     var material = object.material;
@@ -389,6 +400,9 @@ RAY.spawnRay = function(origin, direction, color, recursionDepth, n, num_samples
         // console.log(fresnel);
         var zColor = tmpColor; //[recursionDepth];
         RAY.spawnRay(first.point, reflectVector, zColor, recursionDepth + 1, n, num_samples);
+
+        // RAY.spawnRay(first.point, reflectVector, color, recursionDepth + 1, n, num_samples);
+        // return;
         if (material instanceof THREE.MeshPhongMaterial) {
             zColor.multiply(material.color);
         }
