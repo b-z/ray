@@ -229,7 +229,7 @@ function loadModel() {
                 var b = Math.round(Math.random() * 0xff / 2);
                 child.material = new THREE.MeshPhongMaterial({
                     // color: 0xffffff,
-                    color: // 0x020000 * r + 0x000200 * g + 0x000002 * b,
+                    color: 0x020000 * r + 0x000200 * g + 0x000002 * b,
                     specular: 0xffffff,//0x010000 * r + 0x000100 * g + 0x000001 * b,
                     //707070,
                     // shading: THREE.SmoothShading
