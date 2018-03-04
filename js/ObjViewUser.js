@@ -47,7 +47,7 @@ function init() {
 
     // ground
     plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(10, 10),
+        new THREE.PlaneBufferGeometry(1, 1),
         new THREE.MeshPhongMaterial({
             color: 0xffffff,
             specular: 0x707070
@@ -61,7 +61,7 @@ function init() {
 
     // ceil
     plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(10, 10),
+        new THREE.PlaneBufferGeometry(1, 1),
         new THREE.MeshPhongMaterial({
             color: 0xffffff,
             specular: 0x000000
@@ -94,7 +94,7 @@ function init() {
     // right
 
     plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(10, 10),
+        new THREE.PlaneBufferGeometry(1, 1),
         new THREE.MeshPhongMaterial({
             color: 0x910606,
             specular: 0x707070
@@ -109,7 +109,7 @@ function init() {
 
     // left
     plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(10, 10),
+        new THREE.PlaneBufferGeometry(1, 1),
         new THREE.MeshPhongMaterial({
             color: 0x063c06,
             specular: 0x707070
@@ -125,7 +125,7 @@ function init() {
     // back
 
     plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(10, 10),
+        new THREE.PlaneBufferGeometry(1, 1),
         new THREE.MeshPhongMaterial({
             color: 0xffffff,
             specular: 0x707070
@@ -141,7 +141,7 @@ function init() {
     // front
 
     plane = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(10, 10),
+        new THREE.PlaneBufferGeometry(1, 1),
         new THREE.MeshPhongMaterial({
             color: 0xffffff,
             specular: 0x707070
