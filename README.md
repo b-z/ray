@@ -5,19 +5,29 @@
 
 ***
 
-### 1. How to run
-
-Run these command through CMD or bash:
+### 1. How can I run
 
 ```bash
 cd path-to-this-folder/
+```
+
+then (python2):
+
+``` bash
 python -m SimpleHTTPServer
 ```
-Then, open [127.0.0.1:8000](http://127.0.0.1:8000/).  
 
-Or, you can run it [online](http://b-z.github.io/ray).
+or (python3):
 
-### 2. How to use
+``` bash
+python -m http.server --cgi
+```
+
+Open [127.0.0.1:8000](http://127.0.0.1:8000/) in your browser.  
+
+You can also run it [online](http://b-z.github.io/ray).
+
+### 2. How can I use
 
 * Choose a model from the listed models. Then click the "RUN" button.
 
@@ -25,7 +35,7 @@ Or, you can run it [online](http://b-z.github.io/ray).
 <img src="img/report/p1.png" width=300>
 </div>
 
-* Adjust the orientation of the model.
+* Adjust the orientationl.
 
 <div style="text-align:center;">
 <img src="img/report/p2.png" width=300>
@@ -51,11 +61,31 @@ Or, you can run it [online](http://b-z.github.io/ray).
   * Depth of field
 * Disadvantages
   * No global illumination
-  * No refraction or reflection
+  * No refraction or reflection (Mar.2018 added)
   * No smooth surface
   * Inefficient (because JavaScript doesn't have mechanism of multi-thread and could not use GPU)
 
 ### 4. Gallery
+
+<div style="text-align:center;">
+<img src="img/gallery/box_12_2_0.2#3.png" width=40%><img src="img/gallery/bunny_6_1_0.2#1.png" width=40%>
+</div>
+
+<div style="text-align:center;">
+<img src="img/gallery/teapot_8_2_0.2.png" width=40%><img src="img/gallery/gourd_10_2_0.2.png" width=40%>
+</div>
+
+<div style="text-align:center;">
+<img src="img/gallery/hand_4_1.png" width=40%><img src="img/gallery/lion_4.png" width=40%>
+</div>
+
+<div style="text-align:center;">
+<img src="img/gallery/sphere_4_6_0.5_0.png" width=40%><img src="img/gallery/cone_4_6_0.5_0.png" width=40%>
+</div>
+
+#### Old version:
+
+***
 
 <div style="text-align:center;">
 <img src="img/gallery/box.png" width=40%><img src="img/gallery/bunny.png" width=40%>

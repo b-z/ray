@@ -36,6 +36,20 @@ var onprocess = function() {
 	if (RAY.progress) {
 		$('[id^=doge]').css('top', $('#canv').height() * RAY.coords[RAY.progress - 1].y / RAY.height - 20 + 'px');
 	} //bug fix
+    var t = new Date();
+    var t0 = Math.round((t - TIME)/1000);
+
+    if (RAY.coords[RAY.progress - 1].y == 0) {
+        t -= TIME;
+        t /= 1000;
+        var t0 = Math.round(t);
+        t /= Math.max(RAY.progress, 1);
+        SPEED = t;
+    }
+
+    var time = SPEED * (RAY.width * RAY.height - RAY.progress);
+    time = Math.round(time);
+    $('#info_log')[0].innerHTML = (RAY.progress + ' / ' + RAY.width * RAY.height + '</p><p>' + 'Used: ' + t0 + 's, Est: ' + time + 's.');
 }
 
 var onfinish = function() {
@@ -53,7 +67,10 @@ function startTracing() {
 	RAY.initScene(scene,camera);
 	RAY.traceCanvas(onprocess, onfinish);
 	// setInterval(function(){RAY.traceCanvas();},100);
+    TIME = new Date();
 }
+
+var TIME, SPEED;
 
 function pause() {
 	RAY.pause = true;
