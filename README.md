@@ -68,7 +68,7 @@ You can also run it [online](http://b-z.github.io/ray).
 ### 4. Gallery
 
 <div style="text-align:center;">
-<img src="img/gallery/box_12_2_0.2#3.png" width=40%><img src="img/gallery/bunny_6_1_0.2#1.png" width=40%>
+<img src="img/gallery/box_12_2_0.2.png" width=40%><img src="img/gallery/bunny_6_1_0.2.png" width=40%>
 </div>
 
 <div style="text-align:center;">
